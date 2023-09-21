@@ -6,12 +6,13 @@ const modalR = document.querySelector('#modalRoot');
 
 export default class Modal extends Component {
   componentDidMount() {
-    window.addEventListener('keydown', e => {
-      if (e.code === 'Escape') {
-        this.props.onClick(e);
-      }
-    });
+    window.addEventListener('keydown', this.props.onClick);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.props.onClick);
+  }
+
   render() {
     return createPortal(
       <ModalBackdrop onClick={this.props.onClick} data-id="backdrop">

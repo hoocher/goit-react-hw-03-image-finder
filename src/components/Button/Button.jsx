@@ -1,9 +1,8 @@
 import { DButton, DivContainer } from 'components/Button/Button.styled';
 
-const Button = ({ onClick, totalHits, showBtn }) => {
+const Button = ({ onClick, showBtn }) => {
   return (
-    !showBtn &&
-    totalHits.length > 0 && (
+    !showBtn && (
       <DivContainer>
         <DButton type="button" onClick={onClick}>
           Load more
