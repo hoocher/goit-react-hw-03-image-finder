@@ -19,6 +19,28 @@ export class App extends Component {
   };
 
   async componentDidUpdate(_, prevState) {
+    // OnSubmit
+    if (this.state.searchTag !== prevState.searchTag) {
+      this.setState({ showLoader: true });
+      try {
+        const data = await getImagesApi(this.state.searchTag, 1);
+        if (data.hits.length === 0) {
+          return Notify.failure('Find no images');
+        }
+        this.setState({
+          hits: data.hits,
+          totalHits: data.totalHits,
+        });
+      } catch ({ message }) {
+        Notify.failure('Please try again later ', message);
+      } finally {
+        this.setState({
+          showLoader: false,
+        });
+      }
+    }
+
+    //  Load More
     if (prevState.page !== this.state.page && this.state.page !== 1) {
       this.setState({ showLoader: true });
       this.setState(() => {
@@ -30,7 +52,6 @@ export class App extends Component {
         this.setState({
           hits: newImages,
         });
-        console.log('data', data);
       } catch ({ message }) {
         Notify.failure('Please try again later ', message);
       } finally {
@@ -39,7 +60,6 @@ export class App extends Component {
         });
       }
     }
-    console.log('page', this.state.page);
   }
 
   onSubmit = async e => {
@@ -51,26 +71,10 @@ export class App extends Component {
         'Please type serching tag or delete spase from begining'
       );
     }
-    this.setState({ showLoader: true });
-    try {
-      const data = await getImagesApi(e.target[1].value, 1);
-      if (data.hits === 0) {
-        return Notify.failure('Find no images');
-      }
-      this.setState({
-        searchTag: e.target[1].value,
-        hits: data.hits,
-        totalHits: data.totalHits,
-      });
-      console.log(data.totalHits);
-    } catch ({ message }) {
-      Notify.failure('Please try again later ', message);
-    } finally {
-      this.setState({
-        showLoader: false,
-        page: 1,
-      });
-    }
+    this.setState({
+      searchTag: e.target[1].value,
+      page: 1,
+    });
   };
 
   loadMore = async () => {
