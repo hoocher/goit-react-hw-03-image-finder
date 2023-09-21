@@ -32,7 +32,7 @@ export class App extends Component {
         });
         console.log('data', data);
       } catch ({ message }) {
-        console.error('Error');
+        Notify.failure('Please try again later ', message);
       } finally {
         this.setState({
           showLoader: false,
@@ -64,7 +64,7 @@ export class App extends Component {
       });
       console.log(data.totalHits);
     } catch ({ message }) {
-      console.error('Error');
+      Notify.failure('Please try again later ', message);
     } finally {
       this.setState({
         showLoader: false,
