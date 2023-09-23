@@ -7,7 +7,7 @@ export const ULImageGallery = styled('ul')(() => {
     gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
     gridGap: '16px',
     marginTop: '0px',
-    marginBottom: '0px',
+    marginBottom: '15px',
     padding: '0px',
     listStyle: 'none',
     marginLeft: 'auto',

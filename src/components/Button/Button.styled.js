@@ -29,5 +29,6 @@ export const DivContainer = styled('div')(() => {
   return {
     display: 'flex',
     justifyContent: 'center',
+    marginBottom: '15px',
   };
 });

@@ -18,49 +18,35 @@ export class App extends Component {
     modalItem: '',
   };
 
-  async componentDidUpdate(_, prevState) {
-    // OnSubmit
-    if (this.state.searchTag !== prevState.searchTag) {
-      this.setState({ showLoader: true });
-      try {
-        const data = await getImagesApi(this.state.searchTag, 1);
-        if (data.hits.length === 0) {
-          return Notify.failure('Find no images');
-        }
-        this.setState({
-          hits: data.hits,
-          totalHits: data.totalHits,
-        });
-      } catch ({ message }) {
-        Notify.failure('Please try again later ', message);
-      } finally {
-        this.setState({
-          showLoader: false,
-        });
-      }
-    }
-
-    //  Load More
-    if (prevState.page !== this.state.page && this.state.page !== 1) {
-      this.setState({ showLoader: true });
-      this.setState(() => {
-        return {};
-      });
-      try {
-        const data = await getImagesApi(this.state.searchTag, this.state.page);
-        const newImages = [...this.state.hits, ...data.hits];
-        this.setState({
-          hits: newImages,
-        });
-      } catch ({ message }) {
-        Notify.failure('Please try again later ', message);
-      } finally {
-        this.setState({
-          showLoader: false,
-        });
-      }
+  componentDidUpdate(_, prevState) {
+    if (
+      this.state.searchTag !== prevState.searchTag ||
+      this.state.page !== prevState.page
+    ) {
+      this.fetchApi();
     }
   }
+
+  fetchApi = async () => {
+    this.setState({ showLoader: true });
+    try {
+      const data = await getImagesApi(this.state.searchTag, this.state.page);
+      const newImages = [...this.state.hits, ...data.hits];
+      if (data.hits.length === 0) {
+        return Notify.failure('Find no images');
+      }
+      this.setState({
+        hits: newImages,
+        totalHits: data.totalHits,
+      });
+    } catch ({ message }) {
+      Notify.failure('Please try again later ', message);
+    } finally {
+      this.setState({
+        showLoader: false,
+      });
+    }
+  };
 
   onSubmit = async e => {
     e.preventDefault();
@@ -74,10 +60,11 @@ export class App extends Component {
     this.setState({
       searchTag: e.target[1].value,
       page: 1,
+      hits: [],
     });
   };
 
-  loadMore = async () => {
+  loadMore = () => {
     this.setState(prevState => {
       return { page: prevState.page + 1 };
     });
